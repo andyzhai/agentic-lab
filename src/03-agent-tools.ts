@@ -9,7 +9,7 @@ const calculateRevenue = tool(
   async ({ customers, monthlyPrice }) => {
     console.log("TOOL CALLED: calculateRevenue");
 
-    return String(customers * monthlyPrice);
+    return `${customers} customers × $${monthlyPrice} monthly price × 0.8 = $${customers * monthlyPrice * 0.8} monthly revenue`;
   },
   {
     name: "calculate_monthly_revenue",

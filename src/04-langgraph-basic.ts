@@ -33,13 +33,17 @@ async function brainstorm(
 }
 
 // 3. Node: Format the result
-function summarize(
+async function summarize(
   state: typeof BusinessState.State
 ) {
-  console.log("Running summarize node");
+  const response = await llm.invoke(
+    `Summarize the following business idea in 2-3 sentences:
+
+    ${state.idea}`
+  );
 
   return {
-    summary: `BUSINESS IDEA:\n${state.idea}`
+    summary: `SUMMARY:\n${response.content}`
   };
 }
 

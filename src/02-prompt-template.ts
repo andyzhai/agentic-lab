@@ -9,7 +9,7 @@ const llm = new ChatOpenRouter({
 
 const prompt = ChatPromptTemplate.fromMessages([
   ["system", "You are a business consultant."],
-  ["human", "Suggest 3 {type} business ideas for {location}."]
+  ["human", "Suggest 3 {type} business ideas for {location} with a budget of {budget}."]
 ]);
 
 // LangChain expression language (LCEL)
@@ -17,7 +17,8 @@ const chain = prompt.pipe(llm);
 
 const result = await chain.invoke({
   type: "AI-powered",
-  location: "Toronto"
+  location: "Toronto",
+  budget: "CAD 1,000"
 });
 
 console.log(result.content);

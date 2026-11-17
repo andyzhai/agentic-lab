@@ -21,6 +21,22 @@ const calculateRevenue = tool(
   }
 );
 
+// 1.5 Define a tool for calculating profit
+const calculateProfit = tool(
+  async ({ revenue, expenses }) => {
+    console.log("TOOL CALLED: calculateProfit");    
+    return String(revenue - expenses);
+  },
+  {
+    name: "calculate_profit",
+    description: "Calculate business profit",
+    schema: z.object({
+      revenue: z.number(),
+      expenses: z.number()
+    })
+  }
+);
+
 // 2. Create LLM
 const llm = new ChatOpenRouter({
   model: process.env.OPENROUTER_MODEL!
@@ -29,9 +45,17 @@ const llm = new ChatOpenRouter({
 // 3. Create agent
 const agent = createAgent({
   model: llm,
-  tools: [calculateRevenue],
-  systemPrompt:
-    "You are a business assistant. Use the revenue tool for calculations."
+  tools: [calculateRevenue, calculateProfit],
+  systemPrompt: `
+You are a business assistant.
+
+Rules:
+1. Always use tools for revenue and profit calculations.
+2. Never modify or recalculate tool results.
+3. When explaining calculations, preserve the complete formula returned by the tool.
+4. Never omit any multiplier, discount, or adjustment.
+5. Use the revenue returned by the revenue tool when calling the profit tool.
+`
 });
 
 // 4. Invoke agent
@@ -39,7 +63,7 @@ const result = await agent.invoke({
   messages: [{
     role: "user",
     content:
-      "A business has 25 customers paying $20 monthly. Use the tool to calculate revenue."
+      "A business has 25 customers paying $20 monthly with costs of $200. Use the tool to calculate revenue and profit."
   }]
 });
 
